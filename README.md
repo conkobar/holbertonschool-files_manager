@@ -8,4 +8,6 @@
 
 ---
 
- <center>[Buzz Kleine](https://github.com/conkobar) & [Blake Willis](https://github.com/virtualblakewillis)</center>
+[Buzz Kleine](https://github.com/conkobar)
+&
+[Blake Willis](https://github.com/virtualblakewillis)
