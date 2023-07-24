@@ -2,6 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
+const redisClient = require('../utils/redis');
+const dbClient = require('../utils/db');
+
 
 // GET /status
 router.get('/status', (req, res) => {
