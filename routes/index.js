@@ -1,20 +1,11 @@
 // routes for our api
 
 const express = require('express');
+const AppController = require('../controllers/AppController');
+
 const router = express.Router();
 
-// GET /status
-router.get('/status', (req, res) => {
-  res.status(200).json({ redis: redisClient.isAlive(), db: dbClient.isAlive() });
-}
-);
-
-// GET /stats
-router.get('/stats', async (req, res) => {
-  const users = await dbClient.nbUsers();
-  const files = await dbClient.nbFiles();
-  res.status(200).json({ users, files });
-}
-);
+router.get('/status', AppController.getStatus);
+router.get('/stats', AppController.getStats);
 
 module.exports = router;
