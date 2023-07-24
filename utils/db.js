@@ -4,28 +4,31 @@ const { MongoClient } = require('mongodb');
 //  mongodb class
 class DBClient {
   constructor() {
-    this.port = process.env.DB_PORT || 27017;
-    this.host = process.env.DB_HOST || 'localhost';
-    this.database = process.env.DB_DATABASE || 'files_manager';
-    this.client = new MongoClient(`mongodb://${this.host}:${this.port}/`);
-    this.client.on('error', (err) => {
-      console.log(err);
-    });
+    const host = process.env.DB_HOST || 'localhost';
+    const port = process.env.DB_PORT || 27017;
+    const database = process.env.DB_DATABASE || 'files_manager';
+    this.url = `mongodb://${host}:${port}/${database}`;
+    this.client = new MongoClient(this.url, { useUnifiedTopology: true });
+    this.client.connect();
   }
 
   // checks the active db connection
   isAlive() {
-    return this.client.connected;
+    return this.client.isConnected();
   }
 
   // returns number of docs in collection users
   async nbUsers() {
-    return await this.client.nbUsers;
+    const db = this.client.db();
+    const collection = db.collection('users');
+    return collection.countDocuments();
   }
 
   // returns number of docs in collection files
   async nbFiles() {
-    return await this.client.nbFiles;
+    const db = this.client.db();
+    const collection = db.collection('files');
+    return collection.countDocuments();
   }
 }
 
