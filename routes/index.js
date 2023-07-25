@@ -3,7 +3,7 @@ const express = require('express');
 const AppController = require('../controllers/AppController');
 const UsersController = require('../controllers/UsersController');
 
-//declare our router
+// declare our router
 const router = express.Router();
 // get routes
 router.get('/status', AppController.getStatus);
