@@ -49,3 +49,5 @@ class AuthController {
     return response.status(200).send({ id: user._id, email: user.email });
   }
 }
+
+module.exports = AuthController;
