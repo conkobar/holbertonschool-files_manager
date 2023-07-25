@@ -13,12 +13,13 @@ class FilesController {
       // check if key is valid
       if (!key) return res.status(401).json({ error: 'Unauthorized' });
       // destructure body of request
-      const { name, type, data, isPublic = false, parentId = 0 } = req.body;
+      const {
+        name, type, data, isPublic = false, parentId = 0,
+      } = req.body;
       // check that name, type and data aren't missing
       if (!name) return res.status(400).json({ error: 'Missing name' });
       if (!type) return res.status(400).json({ error: 'Missing type' });
-      if (!data && type !== 'folder')
-        return res.status(400).json({ error: 'Missing data' });
+      if (!data && type !== 'folder') return res.status(400).json({ error: 'Missing data' });
       // check that parentId is valid
       if (parentId) {
         const file = await dbClient.db
@@ -27,8 +28,7 @@ class FilesController {
         // check that file exists
         if (!file) return res.status(400).json({ error: 'Parent not found' });
         // make sure file is a folder
-        if (file && file.type !== 'folder')
-          return res.status(400).json({ error: 'Parent is not a folder' });
+        if (file && file.type !== 'folder') return res.status(400).json({ error: 'Parent is not a folder' });
       }
       // create new file
       let newFile;
@@ -87,8 +87,7 @@ class FilesController {
       // send 404: not found if file doesn't exist
       if (!file) return res.status(404).json({ error: 'Not found' });
       // send 404 if user info is wrong
-      if (user !== file.userId.toString())
-        return res.status(404).json({ error: 'Not found' });
+      if (user !== file.userId.toString()) return res.status(404).json({ error: 'Not found' });
       // send 200: OK with user info
       return res.status(200).send({
         id: file._id,
@@ -157,8 +156,7 @@ class FilesController {
         .findOne({ _id: new mongo.ObjectID(id) });
       // 404 if no file found or incorrect permissions
       if (!file) return res.status(404).json({ error: 'Not found' });
-      if (user !== file.userId.toString())
-        return res.status(404).json({ error: 'Not found' });
+      if (user !== file.userId.toString()) return res.status(404).json({ error: 'Not found' });
       file.isPublic = true;
       // send 200: OK and return the file
       return res.status(200).send({
@@ -185,8 +183,7 @@ class FilesController {
         .findOne({ _id: new mongo.ObjectID(id) });
       // 404 if no file found or wrong permissions
       if (!file) return res.status(404).json({ error: 'Not found' });
-      if (user !== file.userId.toString())
-        return res.status(404).json({ error: 'Not found' });
+      if (user !== file.userId.toString()) return res.status(404).json({ error: 'Not found' });
       file.isPublic = false;
       // return formatted file and send 200: OK
       return res.status(200).send({
@@ -209,12 +206,9 @@ class FilesController {
         .findOne({ _id: new mongo.ObjectID(req.params.id) });
       // check that file exists and has correct permissions
       if (!file) return res.status(404).json({ error: 'Not found' });
-      if (!file.isPublic && (!user || user !== file.userId.toString()))
-        return res.status(404).json({ error: 'Not found' });
-      if (file.type === 'folder')
-        return res.status(400).json({ error: "A folder doesn't have content" });
-      if (!fs.existsSync(file.localPath))
-        return res.status(404).json({ error: 'Not found' });
+      if (!file.isPublic && (!user || user !== file.userId.toString())) return res.status(404).json({ error: 'Not found' });
+      if (file.type === 'folder') return res.status(400).json({ error: "A folder doesn't have content" });
+      if (!fs.existsSync(file.localPath)) return res.status(404).json({ error: 'Not found' });
       // send 200: OK and requested file
       return res.status(200).send(fs.readFileSync(file.localPath));
     })();
