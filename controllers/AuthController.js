@@ -7,27 +7,24 @@ const dbClient = require('../utils/db');
 
 class AuthController {
   static async getConnect(request, response) {
-    //Get the Authorization header from the request
+    // Get the Authorization header from the request
     const authorization = request.header('Authorization');
-    if (!authorization)
-      return response.status(401).send({ error: 'Unauthorized' });
+    if (!authorization) return response.status(401).send({ error: 'Unauthorized' });
     const base64Credentials = authorization.split(' ')[1];
-    if (!base64Credentials)
-      return response.status(401).send({ error: 'Unauthorized' });
-    //Decode the base64 string
+    if (!base64Credentials) return response.status(401).send({ error: 'Unauthorized' });
+    // Decode the base64 string
     const credentials = Buffer.from(base64Credentials, 'base64').toString(
-      'utf-8'
+      'utf-8',
     );
     const [email, password] = credentials.split(':');
-    if (!email || !password)
-      return response.status(401).send({ error: 'Unauthorized' });
-    //Find the user by email and password
+    if (!email || !password) return response.status(401).send({ error: 'Unauthorized' });
+    // Find the user by email and password
     const user = await dbClient.db
       .collection('users')
       .findOne({ email, password: sha1(password) });
     if (!user) return response.status(401).send({ error: 'Unauthorized' });
     const token = uuid();
-    //Create an entry in Redis with the token as the key, and the user id as the value
+    // Create an entry in Redis with the token as the key, and the user id as the value
     const key = `auth_${token}`;
     await redisClient.set(key, user._id.toString(), 86400);
     return response.status(200).send({ token });
@@ -51,7 +48,7 @@ class AuthController {
     if (!userId) return response.status(401).send({ error: 'Unauthorized' });
     const user = await dbClient.db
       .collection('users')
-      .findOne({ _id: ObjectId(userId) });
+      .findOne({ _id: ObjectId(userId) }); // eslint-disable-line
     if (!user) return response.status(401).send({ error: 'Unauthorized' });
     return response.status(200).send({ id: user._id, email: user.email });
   }
