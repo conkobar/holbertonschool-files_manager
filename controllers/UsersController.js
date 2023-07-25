@@ -15,7 +15,7 @@ class UsersController {
       if (user) return res.status(400).json({ error: 'Already exist' });
       // hash the user's password and save them to db
       const newUser = await dbClient.db.collection('users').insertOne({
-        email: email,
+        email,
         password: sha1(password),
       });
       // send status code 201: created
